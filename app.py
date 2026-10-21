@@ -78,7 +78,7 @@ else:
             st.warning("Please write a post first.")
 # -------- UNICONNECT PHOTO POSTS --------
 
-import streamlit as st
+
 
 # Create a place to store posts for this session
 if "photo_posts" not in st.session_state:
