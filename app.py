@@ -76,3 +76,77 @@ else:
             st.success("Post published!")
         else:
             st.warning("Please write a post first.")
+# -------- UNICONNECT PHOTO POSTS --------
+
+import streamlit as st
+
+# Create a place to store posts for this session
+if "photo_posts" not in st.session_state:
+    st.session_state.photo_posts = []
+
+st.divider()
+st.header("📸 UniConnect Photo Feed")
+st.write("Share your campus moments with other students!")
+
+# User details
+student_name = st.text_input(
+    "Your name",
+    key="photo_student_name"
+)
+
+# Choose a photo
+uploaded_photo = st.file_uploader(
+    "Choose a photo",
+    type=["jpg", "jpeg", "png", "webp"],
+    key="photo_upload"
+)
+
+# Write a caption
+caption = st.text_input(
+    "Write a caption",
+    placeholder="What would you like to share?",
+    key="photo_caption"
+)
+
+# Preview the selected photo
+if uploaded_photo is not None:
+    st.image(
+        uploaded_photo,
+        caption="Photo preview",
+        use_container_width=True
+    )
+
+# Publish the post
+if st.button("🚀 Publish Post", key="publish_photo"):
+    if not student_name.strip():
+        st.warning("Please enter your name.")
+    elif uploaded_photo is None:
+        st.warning("Please select a photo first.")
+    else:
+        st.session_state.photo_posts.insert(
+            0,
+            {
+                "name": student_name.strip(),
+                "caption": caption.strip(),
+                "image": uploaded_photo.getvalue()
+            }
+        )
+        st.success("Your photo post has been published!")
+
+# Display the feed
+st.subheader("Latest Posts")
+
+if not st.session_state.photo_posts:
+    st.info("No photo posts yet. Be the first to share!")
+
+for post in st.session_state.photo_posts:
+    with st.container(border=True):
+        st.markdown(f"**👤 {post['name']}**")
+
+        if post["caption"]:
+            st.write(post["caption"])
+
+        st.image(
+            post["image"],
+            use_container_width=True
+        )
